@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import EventList from "./Screens/EventList";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import EventForm from "./Screens/EventForm";
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="events"
+          component={() => <EventList />}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+            headerTitleAlign: "center",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              textTransform: "capitalize",
+            },
+            headerTitle: "Events",
+            headerTintColor: "#FFFFFF",
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="eventForm"
+          component={EventForm}
+          options={{
+            headerTitle: "Add Event",
+            headerTitleAlign: "center",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              textTransform: "capitalize",
+            },
+          }}
+        ></Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
