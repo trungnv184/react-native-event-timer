@@ -3,6 +3,7 @@ import EventList from "./Screens/EventList";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import EventForm from "./Screens/EventForm";
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -11,7 +12,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="events"
-          component={() => <EventList />}
+          component={EventList}
           options={{
             headerStyle: {
               backgroundColor: "#f4511e",
@@ -26,7 +27,7 @@ export default function App() {
           }}
         ></Stack.Screen>
         <Stack.Screen
-          name="eventForm"
+          name="form"
           component={EventForm}
           options={{
             headerTitle: "Add Event",
@@ -34,7 +35,16 @@ export default function App() {
             headerTitleStyle: {
               fontWeight: "bold",
               textTransform: "capitalize",
+              color: "#FFF",
             },
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+            headerBackTitle: "",
+            headerBackTitleStyle: {
+              color: "#FFF",
+            },
+            headerTintColor: "white",
           }}
         ></Stack.Screen>
       </Stack.Navigator>

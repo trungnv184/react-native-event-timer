@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
+import ActionButton from "react-native-action-button";
 import EventCard from "../Components/EventCard";
+import { getEvents } from "../api";
 
 const styles = StyleSheet.create({
   list: {
@@ -12,29 +14,57 @@ const styles = StyleSheet.create({
 
 const EventList = (props) => {
   const [events, setEvents] = useState([]);
-  useEffect(() => {
+  useEffect(async () => {
+    // setInterval(() => {
+    //   const eventList = require("../db.json").events.map((e) => ({
+    //     ...e,
+    //     date: new Date(e.date),
+    //   }));
+    //   setEvents(eventList);
+    // }, 1000);
+
+    const eventList = await getEvents();
+    setEvents(eventList);
+
     setInterval(() => {
-      const eventList = require("../db.json").events.map((e) => ({
+      if (!eventList) {
+        return;
+      }
+
+      const newEventList = eventList.map((e) => ({
         ...e,
         date: new Date(e.date),
       }));
 
-      setEvents(eventList);
+      setEvents(newEventList);
     }, 1000);
+
+    props.navigation.addListener("didFocus", () => {
+      getEvents().then((eventResponse) => setEvents(eventResponse));
+    });
 
     return () => {
       console.log("clean up events component");
     };
   }, []);
 
-  return (
+  const handleAddNewEvent = () => {
+    props.navigation.navigate("form");
+  };
+
+  return [
     <FlatList
       style={styles.list}
       data={events}
       renderItem={({ item }) => <EventCard event={item} />}
       keyExtractor={(item) => item.id}
-    />
-  );
+    />,
+    <ActionButton
+      buttonColor="#1abc9c"
+      key="fab"
+      onPress={handleAddNewEvent}
+    ></ActionButton>,
+  ];
 };
 
 export default EventList;
