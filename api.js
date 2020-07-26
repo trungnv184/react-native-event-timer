@@ -3,18 +3,27 @@ import { v4 as uuidV4 } from "uuid";
 import Expo from "expo";
 
 const url = "http://localhost:3000/events";
+const serverUrl = "https://nailly.firebaseio.com/events.json";
 
 export function getEvents() {
-  return fetch(url)
+  return fetch(serverUrl)
     .then((response) => response.json())
-    .then((events) => events.map((e) => ({ ...e, date: new Date(e.date) })))
+    .then((events) => {
+      if (!events) {
+        return [];
+      }
+      return Object.values(events).map((e) => ({
+        ...e,
+        date: new Date(e.date),
+      }));
+    })
     .catch((err) => {
       console.log(err);
     });
 }
 
 export function saveEvent(title, date) {
-  return fetch(url, {
+  return fetch(serverUrl, {
     method: "POST",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -22,7 +31,7 @@ export function saveEvent(title, date) {
     body: JSON.stringify({
       title,
       date,
-      id: uuidV4(),
+      id: Math.random().toString(),
     }),
   });
 }

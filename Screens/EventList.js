@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, ScrollView } from "react-native";
 import ActionButton from "react-native-action-button";
 import EventCard from "../Components/EventCard";
 import { getEvents } from "../api";
@@ -12,44 +12,39 @@ const styles = StyleSheet.create({
   },
 });
 
-const EventList = (props) => {
+const EventList = ({ navigation }) => {
   const [events, setEvents] = useState([]);
-  useEffect(async () => {
-    // setInterval(() => {
-    //   const eventList = require("../db.json").events.map((e) => ({
-    //     ...e,
-    //     date: new Date(e.date),
-    //   }));
-    //   setEvents(eventList);
-    // }, 1000);
+  useEffect(() => {
+    getEvents().then((data) => setEvents(data));
 
-    const eventList = await getEvents();
-    setEvents(eventList);
-
-    setInterval(() => {
-      if (!eventList) {
+    setInterval((events) => {
+      if (!events) {
         return;
       }
 
-      const newEventList = eventList.map((e) => ({
+      const newEventList = events.map((e) => ({
         ...e,
         date: new Date(e.date),
       }));
 
+      console.log("interval", newEventList);
       setEvents(newEventList);
     }, 1000);
 
-    props.navigation.addListener("didFocus", () => {
-      getEvents().then((eventResponse) => setEvents(eventResponse));
-    });
+    navigation.addListener("focus", () => {
+      getEvents().then((eventResponse) => {
+        const newEventList = eventResponse.map((e) => ({
+          ...e,
+          date: new Date(e.date),
+        }));
 
-    return () => {
-      console.log("clean up events component");
-    };
-  }, []);
+        setEvents(newEventList);
+      });
+    });
+  }, [navigation, , events]);
 
   const handleAddNewEvent = () => {
-    props.navigation.navigate("form");
+    navigation.navigate("form");
   };
 
   return [

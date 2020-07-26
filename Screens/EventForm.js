@@ -16,7 +16,7 @@ const EventForm = (props) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const addEventHandler = () => {
-    console.log("Add Click", props.navigation);
+    // console.log("Add Click", props.navigation);
 
     if (!date) {
       date = new Date().toString();
